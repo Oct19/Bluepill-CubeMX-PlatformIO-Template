@@ -1,6 +1,6 @@
 # Bluepill-CubeMX-PlatformIO-Template
 
-This is a template project for Bluepill (STM32F103C8T6)
+This is a template project for Bluepill (STM32F103C8T6) with FreeRTOS and LED blink
 
 The script (from Reference 1) reads the .project and .cproject file created by STM32Cube and the platformio.ini file to create a build model that can be provided to platformio for building without using the libraries provided by PlatformIO. None of the PlatformIO libraries for CubeMX are used. This should provide a build result comparable to that in STM32CubeIDE.
 
