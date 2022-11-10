@@ -15,3 +15,6 @@
 .settings
 *.launch
 /Debug
+.mxproject
+.cproject
+.project

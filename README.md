@@ -8,21 +8,21 @@ New Libraries can be copied under "lib" folder as subfolders.
 
 ## How to use this template for Bluepill project
 
-1. Copy and rename the folder
+1. Copy this repository, rename if needed
 
 2. Rename .ioc file -> Same as folder name
 
-3. Use STM32CubeMX or STM32CubeIDE to open the .ioc file and configure. Gnerate code(required even if name was not changed).
+3. Use STM32CubeMX to open the .ioc file.Configure, and "Gnerate code".
 
 4. Open folder with VSCode (For Windows, open with Admin Rights, or Turn on Windows Developer mode). PlatformIO extension should recognize this folder
 
-5. Modify code between  `/* USER CODE BEGIN */` and `/* USER CODE END */`
+5. Modify code between  `/* USER CODE BEGIN */` and `/* USER CODE END */` , when CubeMX regenerate code these areas will be untouched
 
 6. Build, Upload, Debug
 
 ## How to edit this template for other STM32 boards
 
-1. Create new project from STM32CubeMX or STM32CubeIDE
+1. Create new project from STM32CubeMX
 
     a. Select MCU or board
 
@@ -77,5 +77,17 @@ New Libraries can be copied under "lib" folder as subfolders.
 
 ## References
 
-1. <https://github.com/jbaumann/pio_and_stm32cubeide>
+1. Script <https://github.com/jbaumann/pio_and_stm32cubeide>
 2. <https://youtu.be/OPrcpbKNSjU>
+3. Linux serial port <https://askubuntu.com/questions/133235/how-do-i-allow-non-root-access-to-ttyusb0>
+4. <https://www.medo64.com/2020/04/disabling-usb-auto-suspend-on-ubuntu/>
+
+## Bug
+
+1. To use serial port, need to replug USB cable
+2. usb_serial_repeat() should make new line
+
+## To Do
+
+1. Update usb_serial.c and usb_cdc_if.c
+2. Use FreeRTOS semaphores for usb_serial_repeat()
