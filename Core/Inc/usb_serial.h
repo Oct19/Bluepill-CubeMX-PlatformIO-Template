@@ -24,7 +24,7 @@ extern "C" {
  */
 void usb_serial_send(char *data);
 
-void usb_serial_repeat(void);
+void usb_serial_echo(void);
 
 #ifdef __cplusplus
 }

@@ -1,10 +1,7 @@
 #MicroXplorer Configuration settings - do not modify
-FREERTOS.BinarySemaphores01=myBinarySem01,Dynamic,NULL
-FREERTOS.CountingSemaphores01=myCountingSem01,2,Dynamic,NULL
 FREERTOS.FootprintOK=true
-FREERTOS.IPParameters=Tasks01,FootprintOK,Timers01,BinarySemaphores01,CountingSemaphores01
-FREERTOS.Tasks01=blink01,24,128,StartBlink01,Default,NULL,Dynamic,NULL,NULL;blink02,8,128,StartBlink02,Default,NULL,Dynamic,NULL,NULL;serial,8,128,StartSerial,Default,NULL,Dynamic,NULL,NULL
-FREERTOS.Timers01=myTimer01,Callback01,osTimerPeriodic,Default,NULL,Dynamic,NULL
+FREERTOS.IPParameters=Tasks01,FootprintOK
+FREERTOS.Tasks01=blink01,8,128,StartBlink01,Default,NULL,Dynamic,NULL,NULL;blink02,9,128,StartBlink02,Default,NULL,Dynamic,NULL,NULL;USBSerial01,24,128,StartUSBSerial01,Default,NULL,Dynamic,NULL,NULL;USBSerial02,25,128,StartUSBSerial02,Default,NULL,Dynamic,NULL,NULL
 File.Version=6
 GPIO.groupedBy=
 KeepUserPlacement=false

@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usb_serial.h"
+#include "usbd_cdc_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,6 +46,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
+int counter01, counter02, counter03, counter04 = 0;
 
 /* USER CODE END Variables */
 /* Definitions for blink01 */
@@ -52,36 +54,28 @@ osThreadId_t blink01Handle;
 const osThreadAttr_t blink01_attributes = {
   .name = "blink01",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+  .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for blink02 */
 osThreadId_t blink02Handle;
 const osThreadAttr_t blink02_attributes = {
   .name = "blink02",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .priority = (osPriority_t) osPriorityLow1,
 };
-/* Definitions for serial */
-osThreadId_t serialHandle;
-const osThreadAttr_t serial_attributes = {
-  .name = "serial",
+/* Definitions for USBSerial01 */
+osThreadId_t USBSerial01Handle;
+const osThreadAttr_t USBSerial01_attributes = {
+  .name = "USBSerial01",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for myTimer01 */
-osTimerId_t myTimer01Handle;
-const osTimerAttr_t myTimer01_attributes = {
-  .name = "myTimer01"
-};
-/* Definitions for myBinarySem01 */
-osSemaphoreId_t myBinarySem01Handle;
-const osSemaphoreAttr_t myBinarySem01_attributes = {
-  .name = "myBinarySem01"
-};
-/* Definitions for myCountingSem01 */
-osSemaphoreId_t myCountingSem01Handle;
-const osSemaphoreAttr_t myCountingSem01_attributes = {
-  .name = "myCountingSem01"
+/* Definitions for USBSerial02 */
+osThreadId_t USBSerial02Handle;
+const osThreadAttr_t USBSerial02_attributes = {
+  .name = "USBSerial02",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal1,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -91,8 +85,8 @@ const osSemaphoreAttr_t myCountingSem01_attributes = {
 
 void StartBlink01(void *argument);
 void StartBlink02(void *argument);
-void StartSerial(void *argument);
-void Callback01(void *argument);
+void StartUSBSerial01(void *argument);
+void StartUSBSerial02(void *argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -111,20 +105,9 @@ void MX_FREERTOS_Init(void) {
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
 
-  /* Create the semaphores(s) */
-  /* creation of myBinarySem01 */
-  myBinarySem01Handle = osSemaphoreNew(1, 1, &myBinarySem01_attributes);
-
-  /* creation of myCountingSem01 */
-  myCountingSem01Handle = osSemaphoreNew(2, 2, &myCountingSem01_attributes);
-
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
-
-  /* Create the timer(s) */
-  /* creation of myTimer01 */
-  myTimer01Handle = osTimerNew(Callback01, osTimerPeriodic, NULL, &myTimer01_attributes);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
@@ -141,8 +124,11 @@ void MX_FREERTOS_Init(void) {
   /* creation of blink02 */
   blink02Handle = osThreadNew(StartBlink02, NULL, &blink02_attributes);
 
-  /* creation of serial */
-  serialHandle = osThreadNew(StartSerial, NULL, &serial_attributes);
+  /* creation of USBSerial01 */
+  USBSerial01Handle = osThreadNew(StartUSBSerial01, NULL, &USBSerial01_attributes);
+
+  /* creation of USBSerial02 */
+  USBSerial02Handle = osThreadNew(StartUSBSerial02, NULL, &USBSerial02_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -170,6 +156,7 @@ void StartBlink01(void *argument)
   for (;;)
   {
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+    counter01++;
     osDelay(100);
   }
   /* USER CODE END StartBlink01 */
@@ -189,39 +176,50 @@ void StartBlink02(void *argument)
   for (;;)
   {
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+    counter02++;
     osDelay(110);
   }
   /* USER CODE END StartBlink02 */
 }
 
-/* USER CODE BEGIN Header_StartSerial */
+/* USER CODE BEGIN Header_StartUSBSerial01 */
 /**
- * @brief Function implementing the serial thread.
+ * @brief Function implementing the USBSerial01 thread.
  * @param argument: Not used
  * @retval None
  */
-/* USER CODE END Header_StartSerial */
-void StartSerial(void *argument)
+/* USER CODE END Header_StartUSBSerial01 */
+void StartUSBSerial01(void *argument)
 {
-  /* USER CODE BEGIN StartSerial */
+  /* USER CODE BEGIN StartUSBSerial01 */
   /* Infinite loop */
   for (;;)
   {
-    char *data = "Hello there!\n";
-    usb_serial_send(data);
-    osDelay(10);
-    usb_serial_repeat();
-    osDelay(1000);
+    char *data = "Hello world\n";
+    CDC_Transmit_FS((uint8_t *)data, strlen(data));
+    osDelay(500);
+    usb_serial_echo();
+    osDelay(500);
   }
-  /* USER CODE END StartSerial */
+  /* USER CODE END StartUSBSerial01 */
 }
 
-/* Callback01 function */
-void Callback01(void *argument)
+/* USER CODE BEGIN Header_StartUSBSerial02 */
+/**
+ * @brief Function implementing the USBSerial02 thread.
+ * @param argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_StartUSBSerial02 */
+void StartUSBSerial02(void *argument)
 {
-  /* USER CODE BEGIN Callback01 */
-
-  /* USER CODE END Callback01 */
+  /* USER CODE BEGIN StartUSBSerial02 */
+  /* Infinite loop */
+  for (;;)
+  {
+    osDelay(1000);
+  }
+  /* USER CODE END StartUSBSerial02 */
 }
 
 /* Private application code --------------------------------------------------*/
