@@ -77,10 +77,10 @@ New Libraries can be copied under "lib" folder as subfolder.
 
 ## References
 
-1. Script <https://github.com/jbaumann/pio_and_stm32cubeide>
-2. <https://youtu.be/OPrcpbKNSjU>
-3. Linux serial port <https://askubuntu.com/questions/133235/how-do-i-allow-non-root-access-to-ttyusb0>
-4. <https://www.medo64.com/2020/04/disabling-usb-auto-suspend-on-ubuntu/>
+1. CubeMX to PlatformIO Script: <https://github.com/jbaumann/pio_and_stm32cubeide>
+2. FreeRTOS tutorial: <https://youtu.be/OPrcpbKNSjU>
+3. Linux user get USB access for serial port: <https://askubuntu.com/questions/133235/how-do-i-allow-non-root-access-to-ttyusb0>
+4. USB serial port tutorial: <https://controllerstech.com/send-and-receive-data-to-pc-without-uart-stm32-usb-com>
 
 ## Bug
 
@@ -88,5 +88,10 @@ New Libraries can be copied under "lib" folder as subfolder.
 
 ## To Do
 
-1. Update usb_serial.c and usb_cdc_if.c
-2. Use FreeRTOS semaphores for usb_serial_echo()
+1. usb_serial_echo should only echo one time, maybe use semaphores
+
+## CubeMX generated file modifications
+
+- USB_DEVICE/App/usbd_cdc_if.c
+  - Add global variable: USB_serial_buf
+  - Modify local function: CDC_Receive_FS

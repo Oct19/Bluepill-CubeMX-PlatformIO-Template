@@ -2,7 +2,7 @@
  * @file    usb_serial.c
  * @author  Cai Dingkun <caidingkun@outlook.com>
  * @brief   This file provides code for the configuration
- *          of USB serial port.
+ *          of USB serial port. Default Baud rate: 9600, Line ending: CRLF
  * @version 0.1
  * @date    2022-11-10
  *
@@ -25,13 +25,13 @@
 uint8_t USB_serial_buf[64];
 
 /**
- * @brief In USB serial port ,repeat message that sent to STM32 through USB serial port.
+ * @brief Repeat message that sent to STM32 through USB serial port. Line ending: CRLF
  *
  */
 void usb_serial_echo(void)
 {
     if (USB_serial_buf != NULL)
     {
-        CDC_Transmit_FS(USB_serial_buf,strlen(USB_serial_buf));
+        CDC_Transmit_FS(USB_serial_buf, strlen((const char *)USB_serial_buf));
     }
 }

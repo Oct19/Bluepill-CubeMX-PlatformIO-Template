@@ -17,12 +17,6 @@ extern "C" {
 #endif
 
 #include "main.h"
-/**
- * @brief Send to PC
- * 
- * @param data string
- */
-void usb_serial_send(char *data);
 
 void usb_serial_echo(void);
 
