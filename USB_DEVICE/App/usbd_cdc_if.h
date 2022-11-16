@@ -93,7 +93,19 @@
 extern USBD_CDC_ItfTypeDef USBD_Interface_fops_FS;
 
 /* USER CODE BEGIN EXPORTED_VARIABLES */
+
+/**
+ * @brief Buffer for reading USB serial message from other devices
+ * 
+ */
 extern uint8_t USB_serial_buf[64];
+
+/**
+ * @brief MIN wait time between CDC_Transmit_FS in ms
+ * 
+ */
+extern int USB_serial_wait_time; 
+
 /* USER CODE END EXPORTED_VARIABLES */
 
 /**

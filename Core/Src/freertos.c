@@ -27,6 +27,7 @@
 /* USER CODE BEGIN Includes */
 #include "usb_serial.h"
 #include "usbd_cdc_if.h"
+#include "rtc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,30 +53,30 @@ int counter01, counter02, counter03, counter04 = 0;
 /* Definitions for blink01 */
 osThreadId_t blink01Handle;
 const osThreadAttr_t blink01_attributes = {
-  .name = "blink01",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+    .name = "blink01",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityLow,
 };
 /* Definitions for blink02 */
 osThreadId_t blink02Handle;
 const osThreadAttr_t blink02_attributes = {
-  .name = "blink02",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow1,
+    .name = "blink02",
+    .stack_size = 128 * 4,
+    .priority = (osPriority_t)osPriorityLow1,
 };
-/* Definitions for USBSerial01 */
-osThreadId_t USBSerial01Handle;
-const osThreadAttr_t USBSerial01_attributes = {
-  .name = "USBSerial01",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+/* Definitions for USB_Serial */
+osThreadId_t USB_SerialHandle;
+const osThreadAttr_t USB_Serial_attributes = {
+    .name = "USB_Serial",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityHigh,
 };
-/* Definitions for USBSerial02 */
-osThreadId_t USBSerial02Handle;
-const osThreadAttr_t USBSerial02_attributes = {
-  .name = "USBSerial02",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal1,
+/* Definitions for OLED */
+osThreadId_t OLEDHandle;
+const osThreadAttr_t OLED_attributes = {
+    .name = "OLED",
+    .stack_size = 256 * 4,
+    .priority = (osPriority_t)osPriorityNormal,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -85,18 +86,19 @@ const osThreadAttr_t USBSerial02_attributes = {
 
 void StartBlink01(void *argument);
 void StartBlink02(void *argument);
-void StartUSBSerial01(void *argument);
-void StartUSBSerial02(void *argument);
+void StartUSB_Serial(void *argument);
+void StartOLED(void *argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
-  * @brief  FreeRTOS initialization
-  * @param  None
-  * @retval None
-  */
-void MX_FREERTOS_Init(void) {
+ * @brief  FreeRTOS initialization
+ * @param  None
+ * @retval None
+ */
+void MX_FREERTOS_Init(void)
+{
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -124,11 +126,11 @@ void MX_FREERTOS_Init(void) {
   /* creation of blink02 */
   blink02Handle = osThreadNew(StartBlink02, NULL, &blink02_attributes);
 
-  /* creation of USBSerial01 */
-  USBSerial01Handle = osThreadNew(StartUSBSerial01, NULL, &USBSerial01_attributes);
+  /* creation of USB_Serial */
+  USB_SerialHandle = osThreadNew(StartUSB_Serial, NULL, &USB_Serial_attributes);
 
-  /* creation of USBSerial02 */
-  USBSerial02Handle = osThreadNew(StartUSBSerial02, NULL, &USBSerial02_attributes);
+  /* creation of OLED */
+  OLEDHandle = osThreadNew(StartOLED, NULL, &OLED_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -137,7 +139,6 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
   /* USER CODE END RTOS_EVENTS */
-
 }
 
 /* USER CODE BEGIN Header_StartBlink01 */
@@ -156,7 +157,6 @@ void StartBlink01(void *argument)
   for (;;)
   {
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-    counter01++;
     osDelay(100);
   }
   /* USER CODE END StartBlink01 */
@@ -176,54 +176,57 @@ void StartBlink02(void *argument)
   for (;;)
   {
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-    counter02++;
     osDelay(110);
   }
   /* USER CODE END StartBlink02 */
 }
 
-/* USER CODE BEGIN Header_StartUSBSerial01 */
+/* USER CODE BEGIN Header_StartUSB_Serial */
 /**
- * @brief Function implementing the USBSerial01 thread.
+ * @brief Function implementing the USB_Serial thread.
  * @param argument: Not used
  * @retval None
  */
-/* USER CODE END Header_StartUSBSerial01 */
-void StartUSBSerial01(void *argument)
+/* USER CODE END Header_StartUSB_Serial */
+void StartUSB_Serial(void *argument)
 {
-  /* USER CODE BEGIN StartUSBSerial01 */
+  /* USER CODE BEGIN StartUSB_Serial */
   /* Infinite loop */
   for (;;)
   {
-    char *data = "Hello world\n";
-    CDC_Transmit_FS((uint8_t *)data, strlen(data));
-    osDelay(500);
+    char timestamp[30];
+    RTC_datetime(timestamp);
+    CDC_Transmit_FS((uint8_t *)timestamp, strlen(timestamp));
+    osDelay(USB_serial_wait_time);
+    const char *message = "Hello\n\r";
+    CDC_Transmit_FS((uint8_t *)message, strlen(message));
+    osDelay(500 - USB_serial_wait_time);
+
     usb_serial_echo();
     osDelay(500);
   }
-  /* USER CODE END StartUSBSerial01 */
+  /* USER CODE END StartUSB_Serial */
 }
 
-/* USER CODE BEGIN Header_StartUSBSerial02 */
+/* USER CODE BEGIN Header_StartOLED */
 /**
- * @brief Function implementing the USBSerial02 thread.
+ * @brief Function implementing the OLED thread.
  * @param argument: Not used
  * @retval None
  */
-/* USER CODE END Header_StartUSBSerial02 */
-void StartUSBSerial02(void *argument)
+/* USER CODE END Header_StartOLED */
+void StartOLED(void *argument)
 {
-  /* USER CODE BEGIN StartUSBSerial02 */
+  /* USER CODE BEGIN StartOLED */
   /* Infinite loop */
   for (;;)
   {
-    osDelay(1000);
+    osDelay(1);
   }
-  /* USER CODE END StartUSBSerial02 */
+  /* USER CODE END StartOLED */
 }
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
 
 /* USER CODE END Application */
-

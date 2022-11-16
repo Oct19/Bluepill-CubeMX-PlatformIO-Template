@@ -84,14 +84,23 @@ New Libraries can be copied under "lib" folder as subfolder.
 
 ## Bug
 
-1. To use serial port, need to re-plug USB cable after reset
+- To use serial port, need to re-plug USB cable after reset
 
 ## To Do
 
 1. usb_serial_echo should only echo one time, maybe use semaphores
+2. Reduce FLASH memory usage
 
 ## CubeMX generated file modifications
 
-- USB_DEVICE/App/usbd_cdc_if.c
-  - Add global variable: USB_serial_buf
+- USB_DEVICE/App/usbd_cdc_if .c/.h
+  - Add global variable: USB_serial_buf, USB_serial_wait_time
   - Modify local function: CDC_Receive_FS
+- Core/Inc/rtc .c/.h
+  - Add function: RTC_datetime
+
+## Fixed Issue
+
+- On board LED not working after RTC enabled: Need to disable RTC output
+- FreeRTOS osDelay cause Hard Fault: increase task stack size
+- Function return string tutorial <https://youtu.be/033DXBYql8w>

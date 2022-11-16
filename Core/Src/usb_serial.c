@@ -14,6 +14,7 @@
 
 #include "usb_device.h"
 #include "usbd_cdc_if.h"
+#include "rtc.h"
 
 /**
  * @brief externally defined in usbd_cdc_if.c
@@ -22,7 +23,7 @@
  * to store received data into USB_serial_buf.
  *
  */
-uint8_t USB_serial_buf[64];
+
 
 /**
  * @brief Repeat message that sent to STM32 through USB serial port. Line ending: CRLF
