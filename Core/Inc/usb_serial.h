@@ -18,7 +18,27 @@ extern "C" {
 
 #include "main.h"
 
-void usb_serial_echo(void);
+#define USB_Serial_Timestamp        1       // yyyy-mm-dd hh:mm:ss
+#define USB_Serial_Echo             1       // Repeat last received message
+#define USB_Serial_Wait_Time        1000     // milliseconds
+
+/**
+ * @brief Storing recieved message through USB serial port
+ * 
+ */
+extern char USB_Receive_Buf[64];
+
+/**
+ * @brief Stroing message to be transmited through USB serial port
+ * 
+ */
+extern char USB_Transmit_Buf[128];
+
+/**
+ * @brief Combine message, and transmit through USB serial port
+ * 
+ */
+void usb_serial_update(void);
 
 #ifdef __cplusplus
 }

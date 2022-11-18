@@ -75,26 +75,26 @@ New Libraries can be copied under "lib" folder as subfolder.
 
     k. Build, Upload, Debug
 
-## References
-
-1. CubeMX to PlatformIO Script: <https://github.com/jbaumann/pio_and_stm32cubeide>
-2. FreeRTOS tutorial: <https://youtu.be/OPrcpbKNSjU>
-3. Linux user get USB access for serial port: <https://askubuntu.com/questions/133235/how-do-i-allow-non-root-access-to-ttyusb0>
-4. USB serial port tutorial: <https://controllerstech.com/send-and-receive-data-to-pc-without-uart-stm32-usb-com>
-
 ## Bug
 
-- To use serial port, need to re-plug USB cable after reset
+- Serial port
+  - To use serial port, need to re-plug USB cable after reset
+  - VSCode Extension: Serial Monitor can work, but other Serial monitor software may not (Linux moserial)
+  - USB_Recieve_Buf is not cleared after reset
 
 ## To Do
 
-1. usb_serial_echo should only echo one time, maybe use semaphores
-2. Reduce FLASH memory usage
+- General
+  - Reduce FLASH memory usage
+- Serial port
+  - Make USB serial receive buffer and transmit buffer size configurable, and check message size for both receive and transmit, return error for overflow
+- RTC
+  - Add milliseconds in timestamp
 
 ## CubeMX generated file modifications
 
-- USB_DEVICE/App/usbd_cdc_if .c/.h
-  - Add global variable: USB_serial_buf, USB_serial_wait_time
+- USB_DEVICE/App/usbd_cdc_if.c
+  - #include usb_serial.h
   - Modify local function: CDC_Receive_FS
 - Core/Inc/rtc .c/.h
   - Add function: RTC_datetime
@@ -104,3 +104,10 @@ New Libraries can be copied under "lib" folder as subfolder.
 - On board LED not working after RTC enabled: Need to disable RTC output
 - FreeRTOS osDelay cause Hard Fault: increase task stack size
 - Function return string tutorial <https://youtu.be/033DXBYql8w>
+
+## References
+
+1. CubeMX to PlatformIO Script: <https://github.com/jbaumann/pio_and_stm32cubeide>
+2. FreeRTOS tutorial: <https://youtu.be/OPrcpbKNSjU>
+3. Linux user get USB access for serial port: <https://askubuntu.com/questions/133235/how-do-i-allow-non-root-access-to-ttyusb0>
+4. USB serial port tutorial: <https://controllerstech.com/send-and-receive-data-to-pc-without-uart-stm32-usb-com>

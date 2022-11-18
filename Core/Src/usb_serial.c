@@ -16,23 +16,31 @@
 #include "usbd_cdc_if.h"
 #include "rtc.h"
 
-/**
- * @brief externally defined in usbd_cdc_if.c
- *
- * In usbd_cdc_if.c, the function int8_t CDC_Receive_FS() has been modified
- * to store received data into USB_serial_buf.
- *
- */
+char USB_Receive_Buf[64];
 
-
-/**
- * @brief Repeat message that sent to STM32 through USB serial port. Line ending: CRLF
- *
- */
-void usb_serial_echo(void)
+void usb_serial_update(void)
 {
-    if (USB_serial_buf != NULL)
+
+    char USB_Transmit_Buf[128];
+    memset(USB_Transmit_Buf, 0, sizeof(USB_Transmit_Buf)); // clear previous message
+
+    if (USB_Serial_Timestamp)
     {
-        CDC_Transmit_FS(USB_serial_buf, strlen((const char *)USB_serial_buf));
+        char timestamp[30];
+        RTC_datetime(timestamp);
+        strcpy(USB_Transmit_Buf, timestamp);
+        strcat(USB_Transmit_Buf, " ");
     }
+
+    const char *message = "Hello";
+    strcat(USB_Transmit_Buf, message);
+
+    if (USB_Serial_Echo && strlen((const char*)USB_Receive_Buf) != 0)
+    {
+        strcat(USB_Transmit_Buf, " ");
+        strcat(USB_Transmit_Buf, USB_Receive_Buf);
+    }
+
+    strcat(USB_Transmit_Buf, "\n\r");
+    CDC_Transmit_FS((uint8_t *)USB_Transmit_Buf, strlen(USB_Transmit_Buf));
 }

@@ -148,11 +148,11 @@ void RTC_datetime(char *timestamp)
 
   /* Display date Format: yy-mm-dd */
   char date[15];
-  sprintf(date, "|%d-%02d-%02d|", 2000 + gDate.Year, gDate.Month, gDate.Date);
+  sprintf(date, "%d-%02d-%02d ", 2000 + gDate.Year, gDate.Month, gDate.Date);
   /* Display time Format: hh:mm:ss */
 
   char time[15];
-  sprintf(time, "|%02d:%02d:%02d|", gTime.Hours, gTime.Minutes, gTime.Seconds);
+  sprintf(time, "%02d:%02d:%02d", gTime.Hours, gTime.Minutes, gTime.Seconds);
 
   strcpy(timestamp, date);
   strcat(timestamp, time);

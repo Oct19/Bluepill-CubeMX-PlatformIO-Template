@@ -194,16 +194,8 @@ void StartUSB_Serial(void *argument)
   /* Infinite loop */
   for (;;)
   {
-    char timestamp[30];
-    RTC_datetime(timestamp);
-    CDC_Transmit_FS((uint8_t *)timestamp, strlen(timestamp));
-    osDelay(USB_serial_wait_time);
-    const char *message = "Hello\n\r";
-    CDC_Transmit_FS((uint8_t *)message, strlen(message));
-    osDelay(500 - USB_serial_wait_time);
-
-    usb_serial_echo();
-    osDelay(500);
+    usb_serial_update();
+    osDelay(USB_Serial_Wait_Time);
   }
   /* USER CODE END StartUSB_Serial */
 }
