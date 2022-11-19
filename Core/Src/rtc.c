@@ -125,12 +125,6 @@ void HAL_RTC_MspDeInit(RTC_HandleTypeDef *rtcHandle)
 
 /* USER CODE BEGIN 1 */
 
-/**
- * @brief Get date and time from RTC
- *
- * @param date Format: yy-mm-dd
- * @param time Format: hh:mm:ss
- */
 void RTC_datetime(char *timestamp)
 {
 

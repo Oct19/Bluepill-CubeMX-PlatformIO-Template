@@ -42,6 +42,11 @@ void MX_RTC_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 
+/**
+ * @brief 
+ * 
+ * @param timestamp format: yyyy-mm-dd hh:mm:ss
+ */
 void RTC_datetime(char * timestamp);
 
 /* USER CODE END Prototypes */

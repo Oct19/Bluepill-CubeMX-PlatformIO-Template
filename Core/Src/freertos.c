@@ -53,30 +53,23 @@ int counter01, counter02, counter03, counter04 = 0;
 /* Definitions for blink01 */
 osThreadId_t blink01Handle;
 const osThreadAttr_t blink01_attributes = {
-    .name = "blink01",
-    .stack_size = 128 * 4,
-    .priority = (osPriority_t)osPriorityLow,
+  .name = "blink01",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for blink02 */
 osThreadId_t blink02Handle;
 const osThreadAttr_t blink02_attributes = {
-    .name = "blink02",
-    .stack_size = 128 * 4,
-    .priority = (osPriority_t)osPriorityLow1,
+  .name = "blink02",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityLow1,
 };
 /* Definitions for USB_Serial */
 osThreadId_t USB_SerialHandle;
 const osThreadAttr_t USB_Serial_attributes = {
-    .name = "USB_Serial",
-    .stack_size = 256 * 4,
-    .priority = (osPriority_t)osPriorityHigh,
-};
-/* Definitions for OLED */
-osThreadId_t OLEDHandle;
-const osThreadAttr_t OLED_attributes = {
-    .name = "OLED",
-    .stack_size = 256 * 4,
-    .priority = (osPriority_t)osPriorityNormal,
+  .name = "USB_Serial",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -87,18 +80,29 @@ const osThreadAttr_t OLED_attributes = {
 void StartBlink01(void *argument);
 void StartBlink02(void *argument);
 void StartUSB_Serial(void *argument);
-void StartOLED(void *argument);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
-/**
- * @brief  FreeRTOS initialization
- * @param  None
- * @retval None
- */
-void MX_FREERTOS_Init(void)
+/* Hook prototypes */
+void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName);
+
+/* USER CODE BEGIN 4 */
+void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName)
 {
+   /* Run time stack overflow checking is performed if
+   configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2. This hook function is
+   called if a stack overflow is detected. */
+   CDC_Transmit_FS("overflow", strlen("overflow"));
+}
+/* USER CODE END 4 */
+
+/**
+  * @brief  FreeRTOS initialization
+  * @param  None
+  * @retval None
+  */
+void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -129,9 +133,6 @@ void MX_FREERTOS_Init(void)
   /* creation of USB_Serial */
   USB_SerialHandle = osThreadNew(StartUSB_Serial, NULL, &USB_Serial_attributes);
 
-  /* creation of OLED */
-  OLEDHandle = osThreadNew(StartOLED, NULL, &OLED_attributes);
-
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -139,6 +140,7 @@ void MX_FREERTOS_Init(void)
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
   /* USER CODE END RTOS_EVENTS */
+
 }
 
 /* USER CODE BEGIN Header_StartBlink01 */
@@ -195,30 +197,13 @@ void StartUSB_Serial(void *argument)
   for (;;)
   {
     usb_serial_update();
-    osDelay(USB_Serial_Wait_Time);
+    osDelay(10);
   }
   /* USER CODE END StartUSB_Serial */
-}
-
-/* USER CODE BEGIN Header_StartOLED */
-/**
- * @brief Function implementing the OLED thread.
- * @param argument: Not used
- * @retval None
- */
-/* USER CODE END Header_StartOLED */
-void StartOLED(void *argument)
-{
-  /* USER CODE BEGIN StartOLED */
-  /* Infinite loop */
-  for (;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END StartOLED */
 }
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
 
 /* USER CODE END Application */
+

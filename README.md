@@ -77,6 +77,8 @@ New Libraries can be copied under "lib" folder as subfolder.
 
 ## Bug
 
+- General
+  - Stack or heap overflow: when serial task stack size set to 200 words, RTOS freeze after 30 seconds
 - Serial port
   - To use serial port, need to re-plug USB cable after reset
   - VSCode Extension: Serial Monitor can work, but other Serial monitor software may not (Linux moserial)
@@ -104,6 +106,7 @@ New Libraries can be copied under "lib" folder as subfolder.
 - On board LED not working after RTC enabled: Need to disable RTC output
 - FreeRTOS osDelay cause Hard Fault: increase task stack size
 - Function return string tutorial <https://youtu.be/033DXBYql8w>
+- RTC not real time: RTC would work ideally with 32.768kHz LSE clock instead of the LSI
 
 ## References
 

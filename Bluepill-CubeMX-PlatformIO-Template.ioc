@@ -1,7 +1,8 @@
 #MicroXplorer Configuration settings - do not modify
-FREERTOS.FootprintOK=false
-FREERTOS.IPParameters=Tasks01,FootprintOK
-FREERTOS.Tasks01=blink01,8,128,StartBlink01,Default,NULL,Dynamic,NULL,NULL;blink02,9,128,StartBlink02,Default,NULL,Dynamic,NULL,NULL;USB_Serial,40,256,StartUSB_Serial,Default,NULL,Dynamic,NULL,NULL;OLED,24,256,StartOLED,Default,NULL,Dynamic,NULL,NULL
+FREERTOS.FootprintOK=true
+FREERTOS.IPParameters=Tasks01,FootprintOK,configCHECK_FOR_STACK_OVERFLOW
+FREERTOS.Tasks01=blink01,8,128,StartBlink01,Default,NULL,Dynamic,NULL,NULL;blink02,9,128,StartBlink02,Default,NULL,Dynamic,NULL,NULL;USB_Serial,40,256,StartUSB_Serial,Default,NULL,Dynamic,NULL,NULL
+FREERTOS.configCHECK_FOR_STACK_OVERFLOW=2
 File.Version=6
 GPIO.groupedBy=Group By Peripherals
 KeepUserPlacement=false
@@ -124,12 +125,14 @@ RCC.APB2TimFreq_Value=72000000
 RCC.FCLKCortexFreq_Value=72000000
 RCC.FamilyName=M
 RCC.HCLKFreq_Value=72000000
-RCC.IPParameters=ADCFreqValue,AHBFreq_Value,APB1CLKDivider,APB1Freq_Value,APB1TimFreq_Value,APB2Freq_Value,APB2TimFreq_Value,FCLKCortexFreq_Value,FamilyName,HCLKFreq_Value,MCOFreq_Value,PLLCLKFreq_Value,PLLMCOFreq_Value,PLLMUL,PLLSourceVirtual,SYSCLKFreq_VALUE,SYSCLKSource,TimSysFreq_Value,USBFreq_Value,USBPrescaler,VCOOutput2Freq_Value
+RCC.IPParameters=ADCFreqValue,AHBFreq_Value,APB1CLKDivider,APB1Freq_Value,APB1TimFreq_Value,APB2Freq_Value,APB2TimFreq_Value,FCLKCortexFreq_Value,FamilyName,HCLKFreq_Value,MCOFreq_Value,PLLCLKFreq_Value,PLLMCOFreq_Value,PLLMUL,PLLSourceVirtual,RTCClockSelection,RTCFreq_Value,SYSCLKFreq_VALUE,SYSCLKSource,TimSysFreq_Value,USBFreq_Value,USBPrescaler,VCOOutput2Freq_Value
 RCC.MCOFreq_Value=72000000
 RCC.PLLCLKFreq_Value=72000000
 RCC.PLLMCOFreq_Value=36000000
 RCC.PLLMUL=RCC_PLL_MUL9
 RCC.PLLSourceVirtual=RCC_PLLSOURCE_HSE
+RCC.RTCClockSelection=RCC_RTCCLKSOURCE_LSE
+RCC.RTCFreq_Value=32768
 RCC.SYSCLKFreq_VALUE=72000000
 RCC.SYSCLKSource=RCC_SYSCLKSOURCE_PLLCLK
 RCC.TimSysFreq_Value=72000000

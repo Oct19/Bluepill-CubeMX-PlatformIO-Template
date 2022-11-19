@@ -32,10 +32,10 @@ void usb_serial_update(void)
         strcat(USB_Transmit_Buf, " ");
     }
 
-    const char *message = "Hello";
+    char *message = "Hello";
     strcat(USB_Transmit_Buf, message);
 
-    if (USB_Serial_Echo && strlen((const char*)USB_Receive_Buf) != 0)
+    if (USB_Serial_Echo && strlen((char*)USB_Receive_Buf) != 0)
     {
         strcat(USB_Transmit_Buf, " ");
         strcat(USB_Transmit_Buf, USB_Receive_Buf);
